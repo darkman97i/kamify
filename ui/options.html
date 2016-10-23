@@ -40,10 +40,10 @@ Copyright (C) F. Brezo and Y. Rubio (i3visio) 2016
 
 <!-- Menu Horizontal -->
 <ul class="menu">
-	<li class="current"><a href="/ui/popup.html" ><i class="fa fa-home"></i> __MSG_extName__</a></li>
-	<li class="right"><a href="/ui/options.html"> <i class="fa fa-cog"></i></a></li>
-	<li class="right"><a href="/ui/help.html"><i class="fa fa-support"></i></a>
-	<li class="right"><a href="/ui/about.html"><i class="fa fa-info-circle"></i></a></li>
+  <li class="current"><a href="/ui/popup.html" ><i class="fa fa-home"></i> __MSG_extName__</a></li>
+  <li class="right"><a href="/ui/options.html"> <i class="fa fa-cog"></i></a></li>
+  <li class="right"><a href="/ui/help.html"><i class="fa fa-support"></i></a>
+  <li class="right"><a href="/ui/about.html"><i class="fa fa-info-circle"></i></a></li>
 </ul>
 
 
@@ -51,67 +51,77 @@ Copyright (C) F. Brezo and Y. Rubio (i3visio) 2016
 
 <!-- ===================================== START FOOTER ===================================== -->
 <div class="grid" style="width: 500px;">
-	<div class="col_12">
-		<div id="optMessage"></div>
-		<ul class="tabs left">
-			<li><a href="#tabProfiles"><i class="fa fa-user"></i> __MSG_tabProfiles__</a></li>
-		</ul>
-		<div id="tabProfiles" class="tab-content">
-			<center>
-		        <!-- Placeholder Text -->
-		        <label for="texURL">__MSG_labServer__<br><br><span class="right">__MSG_labStructure__</span></label>
-		        <br>
-		        <input id="texURL" type="text" placeholder="http://localhost:8080/OpenKM/" width="400px"/>
-		        <br>
-		        <br>
-		        
-		        <!-- Username -->
-		        <label for="texUsername">__MSG_labUsername__</label>
-		        <br>
-		        <input id="texUsername" type="text" placeholder="__MSG_plaUsername__" width="400px"/>
-		        <br>            <br>
-		        
-		        <!-- Password -->
-		        <label for="texPassword">__MSG_labPassword__ </label>
-		        <br>
-		        <input id="texPassword" type="password" placeholder="__MSG_plaPassword__" width="400px"/>
-		        <br>
-		        <br>
-		        
-		        <!-- Ruta por defecto -->
-		        <!--<label for="texDefaultPath">__MSG_texDefaultPath__ </label>
-		        <br>
-		        <input id="texDefaultPath" type="text" placeholder="okm://root/Default" width="400px"/>
-		        <br>
-		        <br>-->
-		        
-				<button class="orange small" id="butSave"><span class="tooltip-bottom" title="__MSG_butSave__"><i class="fa fa-save"></i> __MSG_butSave__</span></button>
+  <div class="col_12">
+    <div id="optMessage"></div>
+    <ul class="tabs left">
+      <li><a href="#tabProfiles"><i class="fa fa-user"></i> __MSG_tabProfiles__</a></li>
+    </ul>
+    <div id="tabProfiles" class="tab-content">
+      <center>
+            <!-- Url -->
+            <label for="texURL">__MSG_labServer__<br><br><span class="right">__MSG_labStructure__</span></label>
+            <br>
+            <input id="texURL" type="text" placeholder="http://localhost:8080/OpenKM/" width="400px"/>
+            <br>
+            <br>
+            
+                <!-- Placeholder Text -->
+                <label for="texURL">__MSG_labWSVersion__</label>
+                <br>
+                <select id="texWSVersion" />                  
+                  <option value="1">1.0</option>
+                  <option value="2">2.0</option>
+                </select>
+                <br>
+                <br>
+            
+            <!-- Username -->
+            <label for="texUsername">__MSG_labUsername__</label>
+            <br>
+            <input id="texUsername" type="text" placeholder="__MSG_plaUsername__" width="400px"/>
+            <br>            <br>
+            
+            <!-- Password -->
+            <label for="texPassword">__MSG_labPassword__ </label>
+            <br>
+            <input id="texPassword" type="password" placeholder="__MSG_plaPassword__" width="400px"/>
+            <br>
+            <br>
+            
+            <!-- Ruta por defecto -->
+            <!--<label for="texDefaultPath">__MSG_texDefaultPath__ </label>
+            <br>
+            <input id="texDefaultPath" type="text" placeholder="okm://root/Default" width="400px"/>
+            <br>
+            <br>-->
+            
+        <button class="orange small" id="butSave"><span class="tooltip-bottom" title="__MSG_butSave__"><i class="fa fa-save"></i> __MSG_butSave__</span></button>
 
-			</center>
-		</div>
+      </center>
+    </div>
 
-	</div>
+  </div>
 </div>
 <!-- ===================================== END CONTENT ===================================== -->
 
 <!-- =================================== START FOOTER ====================================== -->
 
 <div id="footer" class="grid center clearfix">
-	<br>
-	<small>
-		<div>
-			<img src="/img/logo.png" height="12px;" width="12px;"></i> __MSG_extName__ | 
-			__MSG_footerLicensed__
-		</div>
+  <br>
+  <small>
+    <div>
+      <img src="/img/logo.png" height="12px;" width="12px;"></i> __MSG_extName__ | 
+      __MSG_footerLicensed__
+    </div>
 
-		<div class="project">
-			Copyright (C)  <a href="https://i3visio.com">i3visio</a>, 2016: 
-			<a href="https://github.com/i3visio/web-surfer-assistant">__MSG_footerCode__</a> &middot;
-			<a href="https://github.com/i3visio/web-surfer-assistant/issues">__MSG_footerIssues__</a> &middot;
-			<a href="/ui/help.html">__MSG_footerDoc__</a>
-		</div>
-	</small>
-	<br>
+    <div class="project">
+      Copyright (C)  <a href="https://i3visio.com">i3visio</a>, 2016: 
+      <a href="https://github.com/i3visio/web-surfer-assistant">__MSG_footerCode__</a> &middot;
+      <a href="https://github.com/i3visio/web-surfer-assistant/issues">__MSG_footerIssues__</a> &middot;
+      <a href="/ui/help.html">__MSG_footerDoc__</a>
+    </div>
+  </small>
+  <br>
 </div>
 
 <!-- =================================== END FOOTER ====================================== -->
