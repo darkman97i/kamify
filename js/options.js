@@ -22,12 +22,20 @@
 
 */
 
-// Check OpenKM connection data
-function checkConnection(url, userName, password) {    
+// Normalize OpenKM Url
+function normalizeUrl(url) {
     // Ensure url ends with "/"
     if (!url.endsWith("/")) {
         url = url + "/";
     }
+    return url;
+}
+
+// Check OpenKM connection data
+function checkConnection(url, userName, password) {    
+    // Normalize url
+    url = normalizeUrl(url);
+    
     // Check connection
     var requestUrl = url + "services/rest/repository/getAppVersion";
     var xhr = new XMLHttpRequest();
@@ -83,7 +91,7 @@ function saveConfiguration() {
 
     // Setting up the profiles
     var dictProfile = {};
-    dictProfile["url"] = document.getElementById('texURL').value;
+    dictProfile["url"] = normalizeUrl(document.getElementById('texURL').value); // Ensure url ends with "/"
     dictProfile["username"] = document.getElementById('texUsername').value;
     dictProfile["password"] = document.getElementById('texPassword').value;
 
