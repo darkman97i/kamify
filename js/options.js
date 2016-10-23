@@ -22,10 +22,37 @@
 
 */
 
-// Testing if the URL provided is in fact an URL
-function validateURL(textval) {
-    var urlregex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
-    return urlregex.test(textval);
+// Check OpenKM connection data
+function checkConnection(url, userName, password) {    
+    // Ensure url ends with "/"
+    if (!url.endsWith("/")) {
+        url = url + "/";
+    }
+    // Check connection
+    var requestUrl = url + "services/rest/repository/getAppVersion";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", requestUrl, false);
+    //xhr.setRequestHeader("Authorization", "Basic " + btoa("okmAdmin" + ":" + "OpenKMi3visio15?"));
+    xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + password));
+    xhr.setRequestHeader("Accept", "application/json; indent=4");
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            var status = xhr.status;
+
+            if ((status >= 200 && status < 300) || status === 304) {
+                var ver = JSON.parse(xhr.responseText);
+                var okmVersion = "OpenKM version " + ver.major + "." + ver.minor + "." + ver.maintenance + " " + ver.extension + " build:" + ver.build;
+                document.getElementById('optMessage').innerHTML = "<div class='notice success'><i class='icon-ok icon-large'></i> " + "Connected to " + okmVersion + "<a href='#close' class='icon-remove'></a></div>";
+                console.log("Connected to " + okmVersion);
+            } else {
+                document.getElementById('optMessage').innerHTML = "<div class='notice warning'><i class='icon-warning-sign icon-large'></i> " + "Configuration is NOT properly defined to let the application work or OpenKM not available." + "<a href='#close' class='icon-remove'></a></div>";
+                console.log("Error: Configuration is NOT properly defined to let the application work or OpenKM not available" );
+            }
+        }
+    };
+    
+    xhr.send();
 }
 
 /*
@@ -65,23 +92,9 @@ function saveConfiguration() {
     var textConfig = JSON.stringify(dictConfig, null, 4);
 
     console.log("options.js: " + textConfig);
-
-    var correctOptions = true;
-
-    if (!validateURL(dictProfile["url"])) {
-        // Showing warning message
-        document.getElementById('optMessage').innerHTML = "<div class='notice warning'><i class='icon-warning-sign icon-large'></i> " + "WARNING: URL not valid! Configuration is NOT properly defined to let the application work." + "<a href='#close' class='icon-remove'></a></div>";
-        //alert("URL not valid!");
-        
-        correctOptions = false;
-    }
-    else if (dictProfile["username"] == "" || dictProfile["password"] == "") {
-        // Showing warning message
-        document.getElementById('optMessage').innerHTML = "<div class='notice warning'><i class='icon-warning-sign icon-large'></i> " + "WARNING: User or password not provided. Configuration is NOT properly defined to let the application work." + "<a href='#close' class='icon-remove'></a></div>";
-
-        //alert("Username or password not provided!");
-        correctOptions = false;
-    }
+    
+    // Check connection 
+    !checkConnection(dictProfile["url"], dictProfile["username"], dictProfile["password"]);
     
     // Save it using the Chrome extension storage API.
     chrome.storage.sync.set({'config': dictConfig}, function() {
@@ -94,10 +107,6 @@ function saveConfiguration() {
         // Sending message of task completed to let the scripts reload the information
         chrome.runtime.sendMessage({done: true});
     });
-    
-    if (correctOptions) {
-        document.getElementById('optMessage').innerHTML = "<div class='notice success'><i class='icon-ok icon-large'></i> " + "SUCCESS!" + "<a href='#close' class='icon-remove'></a></div>";
-    }
 
     return true;
 }
@@ -110,17 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Grabbing the configuration
     chrome.storage.sync.get("config", function (storage) {
         var dictConfig = storage["config"];
-
-        if (!validateURL(dictConfig["profiles"][dictConfig["currentProfile"]]["url"])) {
-            //alert(chrome.i18n.getMessage(msgNotFoundValidConfig));
-            document.getElementById('optMessage').innerHTML = "<div class='notice error'><i class='icon-remove-sign icon-large'></i> " + "ERROR: URL is not valid" + "<a href='#close' class='icon-remove'></a></div>";
-        }
-        else if (dictConfig["profiles"][dictConfig["currentProfile"]]["username"] == "" || dictConfig["profiles"][dictConfig["currentProfile"]]["password"] == "") {
-            // Showing warning message
-            document.getElementById('optMessage').innerHTML = "<div class='notice error'><i class='icon-remove-sign icon-large'></i> " + "ERROR" + "<a href='#close' class='icon-remove'></a></div>";
-            alert("User or password not provided");
-        }
-
+        var url = dictConfig["profiles"][dictConfig["currentProfile"]]["url"];
+        var userName = dictConfig["profiles"][dictConfig["currentProfile"]]["username"];
+        var password = dictConfig["profiles"][dictConfig["currentProfile"]]["password"];
+        
+        // Check connection 
+        checkConnection(url, userName, password);
 
         // Saving the configuration:
         //      - texURL
