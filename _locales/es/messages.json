@@ -43,6 +43,10 @@
         "message": "URL del servidor de OpenKM:",
         "description": "Texto a mostrar en la etiqueta del campo de texto de usuario."
     },
+    "labWSVersion": {
+        "message": "Versión de los webservices:",
+        "description": "Texto a mostrar en la etiqueta de la lista de la versión del WS."
+    },
     "labStructure": {
         "message": "(debe acabar con el carácter '/')",
         "description": "Texto de ayuda a mostrar junto a la estructura."

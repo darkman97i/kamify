@@ -73,7 +73,8 @@ function checkConnection(url, userName, password) {
                 "profile1" : {
                     "url": "http://localhost:8080/OpenKM/",
                     "username": "username",
-                    "password": "password"
+                    "password": "password",
+                    "ws": "ws"
                 }
             }
         }
@@ -94,6 +95,8 @@ function saveConfiguration() {
     dictProfile["url"] = normalizeUrl(document.getElementById('texURL').value); // Ensure url ends with "/"
     dictProfile["username"] = document.getElementById('texUsername').value;
     dictProfile["password"] = document.getElementById('texPassword').value;
+    var wsVersion = document.getElementById('texWSVersion');
+    dictProfile["ws"] = wsVersion.options[wsVersion.selectedIndex].value;
 
     dictConfig["profiles"]["profile1"] = dictProfile;
 
@@ -102,7 +105,7 @@ function saveConfiguration() {
     console.log("options.js: " + textConfig);
     
     // Check connection 
-    !checkConnection(dictProfile["url"], dictProfile["username"], dictProfile["password"]);
+    checkConnection(dictProfile["url"], dictProfile["username"], dictProfile["password"]);
     
     // Save it using the Chrome extension storage API.
     chrome.storage.sync.set({'config': dictConfig}, function() {
@@ -164,6 +167,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         catch(e){
             console.log("ERROR: There is no password in the current configuration.");
+        }
+        
+        // Inserting the ws into the UI
+        try {
+            var element = document.getElementById('texWSVersion');
+            element.value = dictConfig["profiles"][dictConfig["currentProfile"]]["ws"];
+        }
+        catch(e){
+            console.log("ERROR: There is no ws version in the current configuration.");
         }
     });
 });
