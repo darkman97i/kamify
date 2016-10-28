@@ -42,10 +42,56 @@ function getFileIconCode (mimeType) {
     }
 }
 
-
-function generateHtmlResults(jsonDict, baseUrl) {
+function generateHtmlResultsWS1(jsonDict, baseUrl) {
     // Grabbing the results
-    var results = jsonDict["queryResults"]["queryResult"];
+    var results = jsonDict["queryResult"];
+
+    var html = "<div class='callout callout-top clearfix'>";    
+    html += "<h6><i class='fa fa-list-alt fa-lg'></i> Resultados: " + results.length.toString() + "</h6>";
+    html += "<table class='tight' cellspacing='0' cellpadding='0'><br>";
+    html += "<thead></thead><br>";
+
+    //Body
+    html += '<tbody><br>';
+
+    for (var k = 0; k < results.length; k++) {
+        var res = results[k];
+        
+        var newRow = "<tr class='result'>";
+        // Setting the file name and the Download link
+        newRow += "<docname>" + getFileIconCode (res["document"]["mimeType"] ) + " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res["document"]["uuid"] + "'>" + res["document"]["path"].substring(res["document"]["path"].lastIndexOf('/')+1)+ "</a></docname>";
+        newRow += "<date>Date: " + res["document"]["actualVersion"]["created"].toString()+ "</date><br><br>";
+        
+        // Adding the excerpt if it exists
+        try {
+            if (res["excerpt"].toString() == "undefined") {
+                newRow += "<i>[N/F]</i>";
+            }
+            else {
+                newRow += "<i class='fa fa-quote-left'></i><excerpt>[...] " +res["excerpt"] + "[...]</excerpt><i class='fa fa-quote-right'></i>";
+            }
+        }
+        catch (e) {
+            newRow += "<i>--</i>";
+        }
+        
+        newRow+="</tr><hr><br>";
+
+        html += newRow;
+    }
+    
+    // Closing the results
+    html += "</tbody><br>";
+    html += "</table>";
+
+    html += "</div>";
+
+    return html;
+}
+
+function generateHtmlResultsWS2(jsonDict, baseUrl) {    
+    // Grabbing the results
+    var results = jsonDict["queryResult"];
 
     var html = "<div class='callout callout-top clearfix'>";
 
@@ -57,15 +103,13 @@ function generateHtmlResults(jsonDict, baseUrl) {
     //Body
     html += '<tbody><br>';
     
-
-
     for (var k = 0; k < results.length; k++) {
         var res = results[k];
         
         var newRow = "<tr class='result'>";
         // Setting the file name and the Download link
-        newRow += "<docname>" + getFileIconCode (res["document"]["mimeType"] ) + " <a target='_blank' href='" + baseUrl + "OpenKM/Download?path=/" + res["document"]["path"] + "'>" + res["document"]["path"].substring(res["document"]["path"].lastIndexOf('/')+1)+ "</a></docname>";
-        newRow += "<date>Date: " + res["document"]["actualVersion"]["created"].toString()+ "</date><br><br>";
+        newRow += "<docname>" + getFileIconCode (res["node"]["mimeType"] ) + " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res["node"]["uuid"] + "'>" + res["node"]["path"].substring(res["node"]["path"].lastIndexOf('/')+1)+ "</a></docname>";
+        newRow += "<date>Date: " + res["node"]["actualVersion"]["created"].toString()+ "</date><br><br>";
         
         // Adding the excerpt if it exists
         try {
@@ -101,58 +145,43 @@ function runQuery() {
     chrome.storage.sync.get("config", function (storage) {
         var dictConfig = storage["config"];
         
-        //var apiUrl = "https://connect.h4ck.me:8443/";
-        //var apiUrl = "http://217.160.143.32:8080/";
-        var apiUrl = dictConfig["profiles"][dictConfig["currentProfile"]]["url"];
+        var url = dictConfig["profiles"][dictConfig["currentProfile"]]["url"];
+        var userName = dictConfig["profiles"][dictConfig["currentProfile"]]["username"];
+        var password = dictConfig["profiles"][dictConfig["currentProfile"]]["password"];
+        var ws = dictConfig["profiles"][dictConfig["currentProfile"]]["ws"];
         
-        var requestUrl = apiUrl + "OpenKM/services/rest/search/findByContent?content=" + document.getElementById("texQuery").value;
+        var requestUrl = url + "services/rest/search/findByContent?content=" + document.getElementById("texQuery").value;
 
         var xhr = new XMLHttpRequest();
-
         xhr.open("GET", requestUrl, false);
 
-        //xhr.setRequestHeader("Authorization", "Basic " + btoa("okmAdmin" + ":" + "OpenKMi3visio15?"));
         xhr.setRequestHeader("Authorization", "Basic " + btoa(dictConfig["profiles"][dictConfig["currentProfile"]]["username"] + ":" + dictConfig["profiles"][dictConfig["currentProfile"]]["password"]));
         xhr.setRequestHeader("Accept", "application/json; indent=4");
-        xhr.send();
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                var status = xhr.status;
 
-        // To-DO: Generate output HTML files
-        var html = generateHtmlResults(JSON.parse(xhr.responseText), dictConfig["profiles"][dictConfig["currentProfile"]]["url"]);
+                if ((status >= 200 && status < 300) || status === 304) {
+                    // Unmarshall depends on WS version implementation
+                    if (ws == "2") {
+                        var html = generateHtmlResultsWS2(JSON.parse(xhr.responseText), url);
+                    } else {
+                        var html = generateHtmlResultsWS1(JSON.parse(xhr.responseText), url);
+                    }
+                    document.getElementById("results").innerHTML = html;
+                } else {
+                    document.getElementById('optMessage').innerHTML = "<div class='notice warning'><i class='icon-warning-sign icon-large'></i> " + "Configuration is NOT properly defined to let the application work or OpenKM not available." + "<a href='#close' class='icon-remove'></a></div>";
+                    console.log("Error: Configuration is NOT properly defined to let the application work or OpenKM not available" );
+                }
+            }
+        };
         
-        document.getElementById("results").innerHTML = html;
-        
+        xhr.send();        
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', function () {
     // Adding the main listener
     document.getElementById('butSearch').addEventListener('click', runQuery);
 });
-
-
-/*
-    Grabbing the configuration and seting it into the UI.
-*/
-document.addEventListener('DOMContentLoaded', function () {
-    //console.log("Grabbing the current configuration...");
-    
-    // Grabbing the configuration
-    chrome.storage.sync.get("config", function (storage) {
-        var dictConfig = storage["config"];
-
-        if (!validateURL(dictConfig["profiles"][dictConfig["currentProfile"]]["url"])) {
-            //alert(chrome.i18n.getMessage(msgNotFoundValidConfig));
-            document.getElementById('seaMessage').innerHTML = "<div class='notice error'><i class='icon-remove-sign icon-large'></i> " + "ERROR" + "<a href='#close' class='icon-remove'></a></div>";
-            alert("Url not valid!");
-        }
-        else if (dictConfig["profiles"][dictConfig["currentProfile"]]["username"] == "" || dictConfig["profiles"][dictConfig["currentProfile"]]["password"] == "") {
-            // Showing warning message
-            document.getElementById('seaMessage').innerHTML = "<div class='notice error'><i class='icon-remove-sign icon-large'></i> " + "ERROR" + "<a href='#close' class='icon-remove'></a></div>";
-            alert("User or password not provided");
-        }
-    });
-});
-
-
-
