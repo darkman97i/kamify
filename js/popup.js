@@ -47,42 +47,33 @@ function generateHtmlResultsWS1(jsonDict, baseUrl) {
     var results = jsonDict["queryResult"];
     // workaround for older ws version what shows root variable
     if (typeof jsonDict["queryResults"] !== 'undefined') {
-        results = jsonDict["queryResults"]["queryResult"]
+        results = jsonDict["queryResults"]["queryResult"];
+    }
+    
+    // Check case results <=1 ( in case 0,1 results.length is undefined, and in case 0 result is undefined )
+    var length = 0;
+    if (typeof results !== 'undefined' && typeof results.length !== 'undefined') {
+        length = results.length;
+    } else if (typeof results !== 'undefined') {
+        length = 1;
     }
 
     var html = "<div class='callout callout-top clearfix'>";    
-    html += "<h6><i class='fa fa-list-alt fa-lg'></i> Resultados: " + results.length.toString() + "</h6>";
+    html += "<h6><i class='fa fa-list-alt fa-lg'></i> Resultados: " + length + "</h6>";
     html += "<table class='tight' cellspacing='0' cellpadding='0'><br>";
     html += "<thead></thead><br>";
 
     //Body
     html += '<tbody><br>';
-
-    for (var k = 0; k < results.length; k++) {
-        var res = results[k];
-        
-        var newRow = "<tr class='result'>";
-        // Setting the file name and the Download link
-        newRow += "<docname>" + getFileIconCode (res["document"]["mimeType"] ) + " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res["document"]["uuid"] + "'>" + res["document"]["path"].substring(res["document"]["path"].lastIndexOf('/')+1)+ "</a></docname>";
-        newRow += "<date>Date: " + res["document"]["actualVersion"]["created"].toString()+ "</date><br><br>";
-        
-        // Adding the excerpt if it exists
-        try {
-            if (res["excerpt"].toString() == "undefined") {
-                newRow += "<i>[N/F]</i>";
-            }
-            else {
-                newRow += "<i class='fa fa-quote-left'></i><excerpt>[...] " +res["excerpt"] + "[...]</excerpt><i class='fa fa-quote-right'></i>";
-            }
+    
+    if (length>1) {
+        for (var k = 0; k < length; k++) {
+            var res = results[k];
+            html += generateRowWS(res, "document", baseUrl);
         }
-        catch (e) {
-            newRow += "<i>--</i>";
-        }
-        
-        newRow+="</tr><hr><br>";
-
-        html += newRow;
-    }
+    } else if (length==1) {
+        html += generateRowWS(results, "document", baseUrl);
+    } 
     
     // Closing the results
     html += "</tbody><br>";
@@ -96,10 +87,18 @@ function generateHtmlResultsWS1(jsonDict, baseUrl) {
 function generateHtmlResultsWS2(jsonDict, baseUrl) {    
     // Grabbing the results
     var results = jsonDict["queryResult"];
+    
+    // Check case results <=1 ( in case 0,1 results.length is undefined, and in case 0 result is undefined )
+    var length = 0;
+    if (typeof results !== 'undefined' && typeof results.length !== 'undefined') {
+        length = results.length;
+    } else if (typeof results !== 'undefined') {
+        length = 1;
+    }
 
     var html = "<div class='callout callout-top clearfix'>";
 
-    html += "<h6><i class='fa fa-list-alt fa-lg'></i> Resultados: " + results.length.toString()+ "</h6>";
+    html += "<h6><i class='fa fa-list-alt fa-lg'></i> Resultados: " + length+ "</h6>";
     
     html += "<table class='tight' cellspacing='0' cellpadding='0'><br>";
     html += "<thead></thead><br>";
@@ -107,31 +106,14 @@ function generateHtmlResultsWS2(jsonDict, baseUrl) {
     //Body
     html += '<tbody><br>';
     
-    for (var k = 0; k < results.length; k++) {
-        var res = results[k];
-        
-        var newRow = "<tr class='result'>";
-        // Setting the file name and the Download link
-        newRow += "<docname>" + getFileIconCode (res["node"]["mimeType"] ) + " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res["node"]["uuid"] + "'>" + res["node"]["path"].substring(res["node"]["path"].lastIndexOf('/')+1)+ "</a></docname>";
-        newRow += "<date>Date: " + res["node"]["actualVersion"]["created"].toString()+ "</date><br><br>";
-        
-        // Adding the excerpt if it exists
-        try {
-            if (res["excerpt"].toString() == "undefined") {
-                newRow += "<i>[N/F]</i>";
-            }
-            else {
-                newRow += "<i class='fa fa-quote-left'></i><excerpt>[...] " +res["excerpt"] + "[...]</excerpt><i class='fa fa-quote-right'></i>";
-            }
+    if (length>1) {
+        for (var k = 0; k < length; k++) {
+            var res = results[k];
+            html += generateRowWS(res, "node", baseUrl);
         }
-        catch (e) {
-            newRow += "<i>--</i>";
-        }
-        
-        newRow+="</tr><hr><br>";
-
-        html += newRow;
-    }
+    } else if (length==1) {
+        html += generateRowWS(results, "node", baseUrl);
+    } 
     
     // Closing the results
     html += "</tbody><br>";
@@ -142,6 +124,28 @@ function generateHtmlResultsWS2(jsonDict, baseUrl) {
     return html;
 }
 
+function generateRowWS(res, rootNodeName, baseUrl) {
+    var newRow = "<tr class='result'>";
+    // Setting the file name and the Download link
+    newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]) + " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res[rootNodeName]["uuid"] + "'>" + res[rootNodeName]["path"].substring(res[rootNodeName]["path"].lastIndexOf('/')+1)+ "</a></docname>";
+    newRow += "<date>Date: " + res[rootNodeName]["actualVersion"]["created"].toString()+ "</date><br><br>";
+    
+    // Adding the excerpt if it exists
+    try {
+        if (res["excerpt"].toString() == "undefined") {
+            newRow += "<i>[N/F]</i>";
+        }
+        else {
+            newRow += "<i class='fa fa-quote-left'></i><excerpt>[...] " +res["excerpt"] + "[...]</excerpt><i class='fa fa-quote-right'></i>";
+        }
+    }
+    catch (e) {
+        newRow += "<i>--</i>";
+    }
+    
+    newRow+="</tr><hr><br>";
+    return newRow;
+}
 
 // Executing the Query towards OpenKM
 function runQuery() {
