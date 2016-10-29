@@ -42,6 +42,19 @@ function getFileIconCode (mimeType) {
     }
 }
 
+function getName(nodePath) {
+    return nodePath.substring(nodePath.lastIndexOf('/')+1)
+}
+
+function isBrowserPreview(mimeType) {
+    if (mimeType == "application/pdf" || mimeType == "text/plain" || mimeType == "image/jpeg" || mimeType == "image/gif" || 
+            mimeType == "image/png" || mimeType == "image/bmp" || mimeType == "text/html" || mimeType == "text/plain") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function generateHtmlResultsWS1(jsonDict, baseUrl) {
     // Grabbing the results
     var results = jsonDict["queryResult"];
@@ -81,7 +94,26 @@ function generateHtmlResultsWS1(jsonDict, baseUrl) {
 
     html += "</div>";
 
-    return html;
+    // Setting html results
+    document.getElementById("results").innerHTML = html;
+    
+    // Adding downloading listeners
+    if (length>1) {
+        for (var k = 0; k < length; k++) {
+            var res = results[k];
+            if (isBrowserPreview(res["document"]["mimeType"])) {
+                var uuid = res["document"]["uuid"];
+                document.getElementById(uuid).addEventListener('click', function() {
+                    getContent(this.id);
+                });
+            }
+        }
+    } else if (length==1) {
+        var uuid = results["document"]["uuid"];
+        document.getElementById(uuid).addEventListener('click', function() {
+            getContent(this.id);
+        });
+    } 
 }
 
 function generateHtmlResultsWS2(jsonDict, baseUrl) {    
@@ -119,15 +151,43 @@ function generateHtmlResultsWS2(jsonDict, baseUrl) {
     html += "</tbody><br>";
     html += "</table>";
 
-    html += "</div>";
-
-    return html;
+    html += "</div>"; 
+    
+    // Setting html results
+    document.getElementById("results").innerHTML = html;
+    
+    // Adding downloading listeners
+    if (length>1) {
+        for (var k = 0; k < length; k++) {
+            var res = results[k];
+            if (isBrowserPreview(res["node"]["mimeType"])) {
+                var uuid = res["node"]["uuid"];
+                document.getElementById(uuid).addEventListener('click', function() {
+                    getContent(this.id);
+                });
+            }
+        }
+    } else if (length==1) {
+        var uuid = results["node"]["uuid"];
+        document.getElementById(uuid).addEventListener('click', function() {
+            getContent(this.id);
+        });
+    } 
 }
 
 function generateRowWS(res, rootNodeName, baseUrl) {
     var newRow = "<tr class='result'>";
     // Setting the file name and the Download link
-    newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]) + " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res[rootNodeName]["uuid"] + "'>" + res[rootNodeName]["path"].substring(res[rootNodeName]["path"].lastIndexOf('/')+1)+ "</a></docname>";
+    if (isBrowserPreview(res[rootNodeName]["mimeType"])) {
+        newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]);
+        newRow += " <a href='#' id='"+res[rootNodeName]["uuid"]+"'>" + getName(res[rootNodeName]["path"]) + "</a>";
+        newRow += "</docname>";
+    } else {
+        newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]);
+        newRow += " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res[rootNodeName]["uuid"] + "'>" + getName(res[rootNodeName]["path"]) + "</a>"
+        newRow += "</docname>";
+    }
+    
     newRow += "<date>Date: " + res[rootNodeName]["actualVersion"]["created"].toString()+ "</date><br><br>";
     
     // Adding the excerpt if it exists
@@ -173,11 +233,10 @@ function runQuery() {
                 if ((status >= 200 && status < 300) || status === 304) {
                     // Unmarshall depends on WS version implementation
                     if (ws == "2") {
-                        var html = generateHtmlResultsWS2(JSON.parse(xhr.responseText), url);
+                        generateHtmlResultsWS2(JSON.parse(xhr.responseText), url);
                     } else {
-                        var html = generateHtmlResultsWS1(JSON.parse(xhr.responseText), url);
+                        generateHtmlResultsWS1(JSON.parse(xhr.responseText), url);
                     }
-                    document.getElementById("results").innerHTML = html;
                 } else {
                     document.getElementById('optMessage').innerHTML = "<div class='notice warning'><i class='icon-warning-sign icon-large'></i> " + "Configuration is NOT properly defined to let the application work or OpenKM not available." + "<a href='#close' class='icon-remove'></a></div>";
                     console.log("Error: Configuration is NOT properly defined to let the application work or OpenKM not available" );
