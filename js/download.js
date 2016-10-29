@@ -48,6 +48,10 @@ function getContent(uuid) {
 
                 if ((status >= 200 && status < 300) || status === 304) {
                     var doc = JSON.parse(xhr.responseText);
+                    // workaround for older ws version what shows root variable
+                    if (typeof doc.document !== 'undefined') {
+                        doc = doc.document;
+                    }
                     mimeType = doc.mimeType;
                     docName = getName(doc.path);
                 } else {
