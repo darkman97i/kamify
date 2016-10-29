@@ -101,17 +101,15 @@ function generateHtmlResultsWS1(jsonDict, baseUrl) {
     if (length>1) {
         for (var k = 0; k < length; k++) {
             var res = results[k];
-            if (isBrowserPreview(res["document"]["mimeType"])) {
-                var uuid = res["document"]["uuid"];
-                document.getElementById(uuid).addEventListener('click', function() {
-                    getContent(this.id);
-                });
-            }
+            var uuid = res["document"]["uuid"]; 
+            document.getElementById(uuid).addEventListener('click', function() {
+                getContent(this.id, isBrowserPreview(res["document"]["mimeType"]));
+            });
         }
     } else if (length==1) {
         var uuid = results["document"]["uuid"];
         document.getElementById(uuid).addEventListener('click', function() {
-            getContent(this.id);
+            getContent(this.id, isBrowserPreview(results["document"]["mimeType"]));
         });
     } 
 }
@@ -160,17 +158,15 @@ function generateHtmlResultsWS2(jsonDict, baseUrl) {
     if (length>1) {
         for (var k = 0; k < length; k++) {
             var res = results[k];
-            if (isBrowserPreview(res["node"]["mimeType"])) {
-                var uuid = res["node"]["uuid"];
-                document.getElementById(uuid).addEventListener('click', function() {
-                    getContent(this.id);
-                });
-            }
+            var uuid = res["node"]["uuid"];
+            document.getElementById(uuid).addEventListener('click', function() {
+                getContent(this.id, isBrowserPreview(res["node"]["mimeType"]));
+            });
         }
     } else if (length==1) {
         var uuid = results["node"]["uuid"];
         document.getElementById(uuid).addEventListener('click', function() {
-            getContent(this.id);
+            getContent(this.id, isBrowserPreview(results["node"]["mimeType"]));
         });
     } 
 }
@@ -178,15 +174,15 @@ function generateHtmlResultsWS2(jsonDict, baseUrl) {
 function generateRowWS(res, rootNodeName, baseUrl) {
     var newRow = "<tr class='result'>";
     // Setting the file name and the Download link
-    if (isBrowserPreview(res[rootNodeName]["mimeType"])) {
+//    if (isBrowserPreview(res[rootNodeName]["mimeType"])) {
         newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]);
         newRow += " <a href='#' id='"+res[rootNodeName]["uuid"]+"'>" + getName(res[rootNodeName]["path"]) + "</a>";
         newRow += "</docname>";
-    } else {
-        newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]);
-        newRow += " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res[rootNodeName]["uuid"] + "'>" + getName(res[rootNodeName]["path"]) + "</a>"
-        newRow += "</docname>";
-    }
+//    } else {
+//        newRow += "<docname>" + getFileIconCode(res[rootNodeName]["mimeType"]);
+//        newRow += " <a target='_blank' href='" + baseUrl + "Download?uuid=" + res[rootNodeName]["uuid"] + "'>" + getName(res[rootNodeName]["path"]) + "</a>"
+//        newRow += "</docname>";
+//    }
     
     newRow += "<date>Date: " + res[rootNodeName]["actualVersion"]["created"].toString()+ "</date><br><br>";
     

@@ -22,7 +22,7 @@ function getName(nodePath) {
 }
 
 // getContent based on http://stackoverflow.com/questions/17696516/download-binary-files-with-javascript
-function getContent(uuid) {
+function getContent(uuid, isBrowserPreview) {
     // Grabbing the configuration
     chrome.storage.sync.get("config", function (storage) {
         var dictConfig = storage["config"];
@@ -79,7 +79,12 @@ function getContent(uuid) {
                     if (this.status === 200) {
                         var blob = new Blob([xhr.response], {type: mimeType, name: docName});
                         var objectUrl = URL.createObjectURL(blob);
-                        window.open(objectUrl);
+                        if (isBrowserPreview) {
+                            window.open(objectUrl);
+                        } else {
+                            var iframe = document.getElementById("__download");
+                            iframe.src = objectUrl;
+                        }
                     }
                 };
                 
