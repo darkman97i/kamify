@@ -45,6 +45,10 @@ function getFileIconCode (mimeType) {
 function generateHtmlResultsWS1(jsonDict, baseUrl) {
     // Grabbing the results
     var results = jsonDict["queryResult"];
+    // workaround for older ws version what shows root variable
+    if (typeof jsonDict["queryResults"] !== 'undefined') {
+        results = jsonDict["queryResults"]["queryResult"]
+    }
 
     var html = "<div class='callout callout-top clearfix'>";    
     html += "<h6><i class='fa fa-list-alt fa-lg'></i> Resultados: " + results.length.toString() + "</h6>";
