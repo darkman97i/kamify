@@ -21,8 +21,17 @@ function getName(nodePath) {
     return nodePath.substring(nodePath.lastIndexOf('/')+1)
 }
 
+function isBrowserPreview(mimeType) {
+    if (mimeType == "application/pdf" || mimeType == "text/plain" || mimeType == "image/jpeg" || mimeType == "image/gif" || 
+            mimeType == "image/png" || mimeType == "image/bmp" || mimeType == "text/html" || mimeType == "text/plain") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // getContent based on http://stackoverflow.com/questions/17696516/download-binary-files-with-javascript
-function getContent(uuid, isBrowserPreview) {
+function getContent(uuid) {
     // Grabbing the configuration
     chrome.storage.sync.get("config", function (storage) {
         var dictConfig = storage["config"];
@@ -62,7 +71,7 @@ function getContent(uuid, isBrowserPreview) {
         };
         
         xhr.send();
-        
+
         if (mimeType.length>0) {
             try {
                 var requestUrl = url + "services/rest/document/getContent?docId=" + uuid;
@@ -77,13 +86,19 @@ function getContent(uuid, isBrowserPreview) {
                 
                 xhr.onload = function () {
                     if (this.status === 200) {
-                        var blob = new Blob([xhr.response], {type: mimeType, name: docName});
+                        var blob = new Blob([xhr.response], {type: mimeType, name: docName, fileName: docName});
                         var objectUrl = URL.createObjectURL(blob);
-                        if (isBrowserPreview) {
+                        if (isBrowserPreview(mimeType)) {
                             window.open(objectUrl);
                         } else {
-                            var iframe = document.getElementById("__download");
-                            iframe.src = objectUrl;
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+                            a.href = objectUrl;
+                            a.download = docName;
+                            a.click();
+                            window.URL.revokeObjectURL(objectUrl);
+                            a.remove();
                         }
                     }
                 };
