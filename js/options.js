@@ -40,7 +40,7 @@ function checkConnection(url, userName, password) {
     var requestUrl = url + "services/rest/repository/getAppVersion";
     var xhr = new XMLHttpRequest();
     xhr.open("GET", requestUrl, false);
-    //xhr.setRequestHeader("Authorization", "Basic " + btoa("okmAdmin" + ":" + "OpenKMi3visio15?"));
+
     xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + password));
     xhr.setRequestHeader("Accept", "application/json; indent=4");
     
@@ -50,6 +50,10 @@ function checkConnection(url, userName, password) {
 
             if ((status >= 200 && status < 300) || status === 304) {
                 var ver = JSON.parse(xhr.responseText);
+                // workaround for older ws version what shows root variable
+                if (typeof ver.appVersion !== 'undefined') {
+                    ver = ver.appVersion;
+                }
                 var okmVersion = "OpenKM version " + ver.major + "." + ver.minor + "." + ver.maintenance + " " + ver.extension + " build:" + ver.build;
                 document.getElementById('optMessage').innerHTML = "<div class='notice success'><i class='icon-ok icon-large'></i> " + "Connected to " + okmVersion + "<a href='#close' class='icon-remove'></a></div>";
                 console.log("Connected to " + okmVersion);
