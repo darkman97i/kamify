@@ -50,9 +50,13 @@ Copyright (C) F. Brezo and Y. Rubio (i3visio) 2016
 
 <!-- ===================================== START FOOTER ===================================== -->
 <div class="grid" style="width: 500px;">
+    <div id="optMessage"></div>
+    <div id="waitWhileSearchingMessage" style="display: none;">&nbsp;<img src="/img/loader.gif" height="20px;" width="20px;">&nbsp;&nbsp; __MSG_searchLoader__</div>
+    
 	<div class="col_12">
 		<ul class="tabs left">
 			<li><a href="#tabSearch"><i class="fa fa-search"></i> __MSG_tabSearch__</a></li>
+            <li><a href="#tabAdvancedSearch"><i class="fa fa-search"></i>__MSG_tabAdvancedSearch__</a></li>
 		</ul>
 		<div id="tabSearch" class="tab-content">
 		    <center>
@@ -60,11 +64,55 @@ Copyright (C) F. Brezo and Y. Rubio (i3visio) 2016
 		        <input id="texQuery" type="text" placeholder="__MSG_texQuery__" width="400px"/>
 		        <button class="small orange" id="butSearch"><span class="tooltip-bottom" title="__MSG_butSearch__"><i class="fa fa-search"></i> __MSG_butSearch__</span></button>
 		    </center>
-		    <div id="results">
-		        <!--<textarea id="texResults" placeholder="Placeholder Text"></textarea>-->
-		    </div>
 		</div>
-
+        
+        <div id="tabAdvancedSearch" class="tab-content">
+            <center>
+                <div id="seaMessage"></div>
+                <table class="table table-blank">
+                  <tr>
+                    <td>__MSG_searchPageResults__</td>
+                    <td>
+                      <select id="texPaginatedLimit">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select>
+                      <input id="texPaginatedOffset" type="hidden" value="0"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>__MSG_searchContent__</td>
+                    <td><input id="texPaginatedContent" type="text" width="400px"/></td>
+                  </tr>
+                  <tr>
+                    <td width="10%">__MSG_searchName__</td>
+                    <td><input id="texPaginatedName" type="text" width="400px"/></td>
+                  </tr>
+                  <tr>
+                    <td width="10%">__MSG_searchKeywords__</td>
+                    <td><input id="texPaginatedKeywords" type="text" width="400px"/></td>
+                  </tr>
+                  <tr>
+                    <td width="10%">__MSG_searchAuthor__</td>
+                    <td><input id="texPaginatedAuthor" type="text" width="400px"/></td>
+                  </tr>
+                </table>
+                <button class="small orange" id="butPaginatedClean"><span class="tooltip-bottom" title="__MSG_butAdvancedSearch__"><i class="fa fa-remove"></i> __MSG_searchClean__</span></button>
+                <button class="small orange" id="butPaginatedSearch"><span class="tooltip-bottom" title="__MSG_butAdvancedSearch__"><i class="fa fa-search"></i> __MSG_butSearch__</span></button>
+            </center>
+        </div>
+        
+        <div id="results">
+            <!--<textarea id="texResults" placeholder="Placeholder Text"></textarea>-->
+        </div>
+        
+        <div>
+          <button class="small orange" id="previousPaginatedSearch" style="display: none; float: left; position:relative; top:-30px;"><span class="tooltip-bottom" title="__MSG_butAdvancedSearch__"><i class="fa fa-arrow-circle-left"></i> __MSG_searchPrevious__</span></button>
+          <button class="small orange" id="nextPaginatedSearch" style="display: none; float: right; position:relative; top:-30px;"><span class="tooltip-bottom" title="__MSG_butAdvancedSearch__">__MSG_searchNext__ <i class="fa fa-arrow-circle-right"></i></span></button>
+        </div>
 
 	</div>
 </div>
