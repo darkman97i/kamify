@@ -51,6 +51,10 @@
         "message": "Search",
         "description": "Text to be shown in the Search tab."
     },
+    "tabAdvancedSearch": {
+        "message": "Advanced search",
+        "description": "Text to be shown in the Search tab."
+    },
     "tabProfiles": {
         "message": "Profiles",
         "description": "Text to be shown in the Profiles tab."
@@ -86,5 +90,41 @@
     "nameFAQ": {
         "message": "FAQ",
         "description": "The localised name of the file where the frequent questions will be stored."
+    },    
+    "searchContent": {
+        "message": "Content",
+        "description": "Text for search by content."
+    },    
+    "searchName": {
+        "message": "Name",
+        "description": "Text for search by name."
+    },    
+    "searchLoader": {
+        "message": "Executing query, please wait ...",
+        "description": "Text for indicating search is in course."
+    },    
+    "searchPageResults": {
+        "message": "Page results",
+        "description": "Text for indicating max page results."
+    },    
+    "searchPrevious": {
+        "message": "Previous",
+        "description": "Text for button previous page results."
+    },    
+    "searchNext": {
+        "message": "Next",
+        "description": "Text for button next page results."
+    },    
+    "searchClean": {
+        "message": "Clean",
+        "description": "Text for button clean page results."
+    },    
+    "searchKeywords": {
+        "message": "Keywords",
+        "description": "Text for search by keywords."
+    },    
+    "searchAuthor": {
+        "message": "Author",
+        "description": "Text for search by author."
     }
 }
