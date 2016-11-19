@@ -3,6 +3,10 @@ Kamify Changelog
 
 For more information, check the README.md in <http://github.com/i3visio/kamify>. For the To-Do list visit the issues website at <http://github.com/i3visio/kamify/issues>.
 
+
+0.2.1, 2016/11/19 -- Add advanced search and pagination.
+- Add a new advance search tab that permits the search by author, name or keywords as well as pagination.
+
 0.2.0, 2016/10/31 -- Some improvements for 6.3.x CE and 6.4.0 Professional.
 - Use browser for previewing files in a new tab.
 - Make compatible with older WS 1.0.
