@@ -187,3 +187,8 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('butSave').addEventListener('click', saveConfiguration);
 });
+
+window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
+    document.getElementById('optMessage').innerHTML = "<div class='notice warning'><i class='icon-warning-sign icon-large'></i> " + "Unexpected error in "+ url + " at line " + lineNumber+ " : " +  errorMsg + "<a href='#close' class='icon-remove'></a></div>";
+    return false;
+}
