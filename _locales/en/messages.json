@@ -70,7 +70,7 @@
     "fileUsing": {
         "message": "/doc/en/Using",
         "description": "The localised path of the file where the instructions for end users are given."
-    },    
+    },
     "fileFAQ": {
         "message": "/doc/en/FAQ",
         "description": "The localised path of the file where the frequent questions will be stored."
@@ -86,45 +86,77 @@
     "nameUsing": {
         "message": "Usage",
         "description": "The localised name of the file where the instructions for end users are given."
-    },    
+    },
     "nameFAQ": {
         "message": "FAQ",
         "description": "The localised name of the file where the frequent questions will be stored."
-    },    
+    },
     "searchContent": {
         "message": "Content",
         "description": "Text for search by content."
-    },    
+    },
     "searchName": {
         "message": "Name",
         "description": "Text for search by name."
-    },    
+    },
     "searchLoader": {
         "message": "Executing query, please wait ...",
         "description": "Text for indicating search is in course."
-    },    
+    },
     "searchPageResults": {
-        "message": "Page results",
+        "message": "Number of results",
         "description": "Text for indicating max page results."
-    },    
+    },
     "searchPrevious": {
         "message": "Previous",
         "description": "Text for button previous page results."
-    },    
+    },
     "searchNext": {
         "message": "Next",
         "description": "Text for button next page results."
-    },    
+    },
     "searchClean": {
         "message": "Clean",
         "description": "Text for button clean page results."
-    },    
+    },
     "searchKeywords": {
         "message": "Keywords",
         "description": "Text for search by keywords."
-    },    
+    },
     "searchAuthor": {
         "message": "Author",
         "description": "Text for search by author."
+    },
+    "plaSearchContent": {
+        "message": "Text",
+        "description": "Text for the search placeholder in advanced search."
+    },
+    "plaSearchName": {
+        "message": "filename.pdf",
+        "description": "Text for the name placeholder in advanced search."
+    },
+    "plaSearchKeywords": {
+        "message": "important",
+        "description": "Text for the keywords placeholder in advanced search."
+    },
+    "plaSearchAuthor": {
+        "message": "John Doe",
+        "description": "Text for the author placeholder in advanced search."
+    },
+    "tipSearchContent": {
+        "message": "Set the content to be searched in each document.",
+        "description": "Text for the search tooltip in advanced search."
+    },
+    "tipSearchName": {
+        "message": "Limit the search results by filename.",
+        "description": "Text for the name tooltip in advanced search."
+    },
+    "tipSearchKeywords": {
+        "message": "Filter by keyword.",
+        "description": "Text for the keywords tooltip in advanced search."
+    },
+    "tipSearchAuthor": {
+        "message": "Determine the author name.",
+        "description": "Text for the author tooltip in advanced search."
     }
 }
